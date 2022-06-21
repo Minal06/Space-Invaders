@@ -9,17 +9,23 @@ public class Menu : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
     [SerializeField] GameObject winText;
-    [SerializeField] GameObject loseText;    
+    [SerializeField] GameObject loseText;
+        
 
     private void Start()
     {
-        scoreText.text = "Score: " + PlayerScore.score;
-        WhoWon();
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (currentScene.buildIndex == 2)
+        {
+            scoreText.text = "Score: " + PlayerScore.score;
+            WhoWon();
+        }
+            
     }
 
 
     void WhoWon()
-    {        
+    {
         if (GameManager.isPlayerDead)
         {
             loseText.SetActive(true);
@@ -28,6 +34,8 @@ public class Menu : MonoBehaviour
         {
             winText.SetActive(true);
         }
+          
+       
     }
 
 
