@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CheckCollisions : MonoBehaviour
 {
-    //[SerializeField] int scoreValue;
+    public BaseHealth bH;
 
     private void OnTriggerEnter(Collider other)
     {   
@@ -38,10 +38,12 @@ public class CheckCollisions : MonoBehaviour
                 {
                     case "Base":
                         gameObject.SetActive(false);
+                        Destroy(other.gameObject);
                         break;
                     case "Player":
-                        gameObject.SetActive(false);                        
-                        
+                        gameObject.SetActive(false);
+                        PlayerController.pHealth -= 1;
+                        Debug.Log(PlayerController.pHealth);
                         break;
 
                     //case "PlayerBullet":

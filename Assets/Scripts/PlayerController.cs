@@ -5,8 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private float horizontalInput;
+    [Header("Player Setup")]
     [SerializeField] float speed = 20.0f;
-    [SerializeField] float xRange = 20;   
+    [SerializeField] float xRange = 20;
+    [SerializeField] GameObject health1, health2, health3;
+    public static int pHealth = 3;
+
+
+    [SerializeField] GameManager gameManager;
 
 
     // Update is called once per frame
@@ -19,7 +25,9 @@ public class PlayerController : MonoBehaviour
         Movement();
 
         //shooting
-        Shot();        
+        Shot();
+        
+        IsPlayerKilled();
     }
 
     void Movement()
@@ -52,5 +60,42 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
         }
+    }
+
+    void IsPlayerKilled()
+    {
+        switch (pHealth)
+        {
+            case 3:
+                health1.gameObject.SetActive(true);
+                health2.gameObject.SetActive(true);
+                health3.gameObject.SetActive(true);
+                break;
+            case 2:
+                health1.gameObject.SetActive(true);
+                health2.gameObject.SetActive(true);
+                health3.gameObject.SetActive(false);
+                break;
+            case 1:
+                health1.gameObject.SetActive(true);
+                health2.gameObject.SetActive(false);
+                health3.gameObject.SetActive(false);
+                break ;
+
+            case 0:
+                health1.gameObject.SetActive(false);
+                health2.gameObject.SetActive(false);
+                health3.gameObject.SetActive(false);
+                Destroy(gameObject);
+                gameManager.PlayerIsDead();
+                gameManager.GameOver();
+                break;
+        }
+        //if (pHealth <= 0)
+        //{
+        //    Destroy(gameObject);
+        //    gameManager.PlayerIsDead();
+        //    gameManager.GameOver();
+        //}
     }
 }

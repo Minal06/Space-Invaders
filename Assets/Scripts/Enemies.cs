@@ -14,14 +14,16 @@ public class Enemies : MonoBehaviour
     [SerializeField] int columns;
     [SerializeField] float space;
 
-    [Header("Enemy Speed and Reach")]
+    [Header("Enemy Speed and Reach and Fire")]
     [SerializeField] float eSpeed;
     [SerializeField] float eRange;
     [SerializeField] float eDrop;
+    [SerializeField] float eFireRate;
     [SerializeField] float lastEnemySpeed;
-    private Vector3 eDirection = Vector2.right;
+    [SerializeField] float gameOverLine;    
+    private Vector3 eDirection = Vector3.right;    
 
-    private float gameOverLine = 14;
+    public GameManager gameManager;
 
     private void Awake()
     {
@@ -33,13 +35,15 @@ public class Enemies : MonoBehaviour
                 Transform _enemy = Instantiate(enemyPref, startingPos, Quaternion.identity);
                 _enemy.SetParent(holder);
             } 
-        }
+        }        
     }
 
     private void Update()
     {
         EnemyMove();
         FasterEnemy();
+        GameWin();
+        EnemyAttack();
     }
 
     void EnemyMove()
@@ -57,37 +61,56 @@ public class Enemies : MonoBehaviour
             {
                 eSpeed = -eSpeed;
 
-                Vector3 position = transform.position;
-                position.z -= eDrop;
-                transform.position = position;                
+                holder.position += Vector3.back * eDrop;
+                //Vector3 position = transform.position;
+                //position.z -= eDrop;
+                //transform.position = position;                
 
                 return;
             }
 
             if (enemy.position.z <= -gameOverLine)
             {
-                GameManager.isPlayerDead = true;
-                GameManager.GameOver();
+                gameManager.PlayerIsDead();
+                gameManager.GameOver();
+            }
+        }        
+    }
+
+    void EnemyAttack()
+    {
+        foreach (Transform enemy in holder)
+        {
+            if (!enemy.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+            if (Random.value < (eFireRate / holder.childCount))
+            {
+                GameObject pooledProjectile = ObjectPooler.SharedInstance.GetPooledBullet("EnemyBullet");
+                if (pooledProjectile != null)
+                {
+                    pooledProjectile.SetActive(true); // activate it
+                    pooledProjectile.transform.position = enemy.transform.position; //position at enemy
+                }
             }
 
         }
-
-        
     }
 
     void FasterEnemy()
     {
         if(holder.childCount == 1)
         {
-            eSpeed = lastEnemySpeed;
+            transform.position += (eDirection * eSpeed * Time.deltaTime) * lastEnemySpeed;
         }
     }
-
+        
     void GameWin()
     {
         if(holder.childCount == 0)
         {
-            GameManager.GameOver();
+            gameManager.GameOver();            
         }
     }
 }

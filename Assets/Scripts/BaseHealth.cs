@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class BaseHealth : MonoBehaviour
 {
-    public static int b_health = 2;
+
+    [SerializeField] int health;
+    private int bHealth;
+
+    private void Awake()
+    {
+        health = bHealth;
+    }
 
     // Update is called once per frame
     void Update()
@@ -14,9 +21,16 @@ public class BaseHealth : MonoBehaviour
 
     void BaseDestroy()
     {
-        if (b_health <= 0)
+        if (bHealth <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    public void Damage()
+    {
+        bHealth -= 1;
+        Debug.Log(gameObject.name + bHealth);
+        return;
     }
 }
