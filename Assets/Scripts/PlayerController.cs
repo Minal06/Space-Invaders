@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
 
+    private void Awake()
+    {
+        pHealth = 3;
+    }
+
 
     // Update is called once per frame
     void Update()
